@@ -46,5 +46,4 @@ echo "Changelog for build:"
 cat $PLUGIN_OUTPUT
 
 # Save current commit hash to cache
-echo $
-COMMIT_SHA > $LAST_COMMIT
+echo $COMMIT_SHA > $LAST_COMMIT
