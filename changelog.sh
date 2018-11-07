@@ -17,7 +17,7 @@ fi
 echo $PREV_COMMIT_SHA > .last_commit
 
 # Set commit range for git log, from previous commit to latest
-GIT_COMMIT_RANGE="$PREV_COMMIT_SHA..$COMMIT_SHA"
+GIT_COMMIT_RANGE="$PREV_COMMIT_SHA..$REVISION"
 GIT_COMMIT_LOG="$(git log --format='%s (by %an)' $GIT_COMMIT_RANGE)"
 
 # Check if log isn't empty, otherwise rebuild cache and exit
@@ -27,7 +27,7 @@ then
 
     # Save commit message to changelog and overwrite cache
     echo $COMMIT_MESSAGE > $PLUGIN_OUTPUT
-    echo $COMMIT_SHA > $LAST_COMMIT
+    echo $REVISION > $LAST_COMMIT
 
     # Let other plugins/scripts know that this is a clean build
     touch .clean
@@ -46,4 +46,4 @@ echo "Changelog for build:"
 cat $PLUGIN_OUTPUT
 
 # Save current commit hash to cache
-echo $COMMIT_SHA > $LAST_COMMIT
+echo $REVISION > $LAST_COMMIT
