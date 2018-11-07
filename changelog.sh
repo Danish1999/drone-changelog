@@ -1,31 +1,23 @@
 #!/bin/bash
 
-if [ -z "$MAJOR_MINOR" ]; then
-    MAJOR_MINOR="alpha"
-fi
-
 if [ -z "$PLUGIN_OUTPUT" ]; then
     PLUGIN_OUTPUT="changelog.txt"
 fi
 
-if [ -z "$PLUGIN_CACHE" ]; then
-    PLUGIN_CACHE="/cache/$DRONE_REPO_OWNER/$DRONE_REPO_NAME/$DRONE_BRANCH"
-fi
-
 # Check cache for previous commit hash
-LAST_COMMIT="$PLUGIN_CACHE/.last_commit"
+LAST_COMMIT="$SEMAPHORE_CACHE_DIR/.last_commit"
 if [ -f "$LAST_COMMIT" ]; then
-    DRONE_PREV_COMMIT_SHA="$(cat $LAST_COMMIT)"
+    PREV_COMMIT_SHA="$(cat $LAST_COMMIT)"
 else
-    mkdir -p $PLUGIN_CACHE
-    echo $DRONE_COMMIT_SHA > $LAST_COMMIT
+    mkdir -p $SEMAPHORE_CACHE_DIR
+    echo $COMMIT_SHA > $LAST_COMMIT
 fi
 
 # Put local copy of last commit in working directory
-echo $DRONE_PREV_COMMIT_SHA > .last_commit
+echo $PREV_COMMIT_SHA > .last_commit
 
 # Set commit range for git log, from previous commit to latest
-GIT_COMMIT_RANGE="$DRONE_PREV_COMMIT_SHA..$DRONE_COMMIT_SHA"
+GIT_COMMIT_RANGE="$PREV_COMMIT_SHA..$COMMIT_SHA"
 GIT_COMMIT_LOG="$(git log --format='%s (by %an)' $GIT_COMMIT_RANGE)"
 
 # Check if log isn't empty, otherwise rebuild cache and exit
@@ -34,8 +26,8 @@ then
     echo "No changelog found, skipping cache restore and rebuild!"
 
     # Save commit message to changelog and overwrite cache
-    echo $DRONE_COMMIT_MESSAGE > $PLUGIN_OUTPUT
-    echo $DRONE_COMMIT_SHA > $LAST_COMMIT
+    echo $COMMIT_MESSAGE > $PLUGIN_OUTPUT
+    echo $COMMIT_SHA > $LAST_COMMIT
 
     # Let other plugins/scripts know that this is a clean build
     touch .clean
@@ -50,8 +42,9 @@ do
 done
 
 # Print out changelog
-echo "Changelog for build ${MAJOR_MINOR}-${DRONE_BUILD_NUMBER}:"
+echo "Changelog for build:"
 cat $PLUGIN_OUTPUT
 
 # Save current commit hash to cache
-echo $DRONE_COMMIT_SHA > $LAST_COMMIT
+echo $
+COMMIT_SHA > $LAST_COMMIT
