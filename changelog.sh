@@ -47,3 +47,9 @@ cat $PLUGIN_OUTPUT
 
 # Save current commit hash to cache
 echo $REVISION > $LAST_COMMIT
+
+CHANGELOG=" <b>Changelog for build:</b>
+$(cat changelog.txt)"
+
+
+curl -F chat_id="$channelid" -F text="$CHANGELOG" -F parse_mode="HTML" -F disable_web_page_preview="true" https://api.telegram.org/bot$bottoken/sendMessage
