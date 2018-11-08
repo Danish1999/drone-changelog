@@ -48,7 +48,7 @@ cat $PLUGIN_OUTPUT
 # Save current commit hash to cache
 echo $REVISION > $LAST_COMMIT
 
-CHANGELOG=" <b>Changelog for build:</b>
+CHANGELOG=" <b>Changelog for build Prototype-$version-$SEMAPHORE_BUILD_NUMBER:</b>
 $(cat changelog.txt)"
 
 
